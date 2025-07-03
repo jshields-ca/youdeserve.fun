@@ -246,63 +246,7 @@
         }
 
         /**
-         * Uses Gemini API to check if the submission is appropriate.
-         * @param {string} text - The text to moderate.
-         * @returns {Promise<boolean>} - True if safe, false otherwise.
-         */
-        async function isSubmissionSafe(text) {
-            const apiKey = ""; // Will be handled by the environment
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            const prompt = `You are a very lenient content moderator for a positive website called 'You Deserve Fun'. Your ONLY job is to block truly harmful content.
-
-You MUST classify the submission as 'SAFE' unless it contains one of the following:
-1. Hate speech or direct attacks on individuals or groups.
-2. Profanity or vulgar language.
-3. Explicit or adult content.
-4. Spam or advertising.
-
-Almost everything else is 'SAFE'. This includes complaining about work, feeling tired, mentioning chores, or any other everyday statement that is not actively harmful. The goal is to let users express themselves freely.
-
-Examples of what you MUST classify as 'SAFE':
-- "I finally caught up on my email!"
-- "Ugh, what a long day at work."
-- "I'm so tired."
-- "I did the dishes."
-
-Examples of what you MUST classify as 'UNSAFE':
-- "I hate my boss."
-- "This website is stupid."
-- "[curse word]"
-
-Based on these strict rules, analyze the following submission. Respond with only the single word 'SAFE' or 'UNSAFE'.
-
-Submission: "${text}"`;
-            
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) {
-                    console.error("Moderation API call failed with status:", response.status);
-                    return false; // Fail closed (assume unsafe) if API fails
-                }
-                const result = await response.json();
-                const moderationResult = result.candidates[0].content.parts[0].text.trim().toUpperCase();
-                console.log("Moderation result:", moderationResult);
-                return moderationResult === 'SAFE';
-            } catch (error) {
-                console.error("Error during moderation check:", error);
-                return false; // Fail closed on error
-            }
-        }
-
-        /**
-         * Handles the submission process, including moderation.
+         * Handles the submission process.
          * @param {Event} e - The form submission event.
          */
         async function handleSubmission(e) {
@@ -319,20 +263,9 @@ Submission: "${text}"`;
 
             // --- Start loading state ---
             submitBtn.disabled = true;
-            submitBtnText.innerHTML = '<span class="btn-spinner"></span>Checking...';
-
-            // --- Moderation Check ---
-            const safe = await isSubmissionSafe(reason);
-
-            if (!safe) {
-                showModal("Content Warning", "This submission doesn't seem to fit our positive community guidelines. Please try again with a different reason.");
-                submitBtn.disabled = false;
-                submitBtnText.innerHTML = 'Share My Reason';
-                return;
-            }
-
-            // --- If safe, proceed to add to Firestore ---
             submitBtnText.innerHTML = '<span class="btn-spinner"></span>Sharing...';
+
+            // --- Directly add to Firestore ---
             try {
                 const reasonsCollection = collection(db, `/artifacts/${appId}/public/data/reasons`);
                 await addDoc(reasonsCollection, {
