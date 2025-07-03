@@ -113,7 +113,15 @@
         import { getFirestore, collection, addDoc, getDocs, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Firebase Configuration ---
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "YOUR_API_KEY", authDomain: "YOUR_AUTH_DOMAIN", projectId: "YOUR_PROJECT_ID" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9LAtLccb4F6Pbo4sNxDWB2tXsrKjy3e8",
+            authDomain: "youdeservefun-d5992.firebaseapp.com",
+            projectId: "youdeservefun-d5992",
+            storageBucket: "youdeservefun-d5992.appspot.com",
+            messagingSenderId: "154468569048",
+            appId: "1:154468569048:web:8aae7cf888fea1998aacad",
+            measurementId: "G-T1RMELTXB1"
+        };
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-fun-wall';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         
@@ -152,6 +160,10 @@
          */
         async function initializeFirebase() {
             try {
+                if (!firebaseConfig.apiKey) {
+                    throw new Error("Firebase configuration is missing.");
+                }
+
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -159,7 +171,7 @@
                 await authenticateUser();
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
-                reasonText.textContent = "Could not connect to the Fun Wall. Please try again later.";
+                reasonText.textContent = "Could not connect to the Fun Wall. Please check configuration and try again.";
                 loader.style.display = 'none';
                 reasonText.style.display = 'block';
             }
@@ -183,7 +195,7 @@
                         }
                     } catch (error) {
                         console.error("Authentication error:", error);
-                        showModal("Authentication Error", "Could not authenticate. Please refresh the page.");
+                        showModal("Authentication Error", "Could not authenticate. Please check your Firebase settings (Authorized Domains, Anonymous Sign-in) and refresh the page.");
                     }
                 }
             });
@@ -242,7 +254,30 @@
             const apiKey = ""; // Will be handled by the environment
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-            const prompt = `You are a content moderator for a website called 'You Deserve Fun' where people post positive reasons why they deserve to have fun. Your task is to determine if a user's submission is safe and appropriate for a general audience. The submission should be positive, not offensive, not hateful, and not contain profanity or harmful content. Respond with only the single word 'SAFE' if the submission is appropriate, and 'UNSAFE' if it is not. Do not provide any explanation. Submission: "${text}"`;
+            const prompt = `You are a very lenient content moderator for a positive website called 'You Deserve Fun'. Your ONLY job is to block truly harmful content.
+
+You MUST classify the submission as 'SAFE' unless it contains one of the following:
+1. Hate speech or direct attacks on individuals or groups.
+2. Profanity or vulgar language.
+3. Explicit or adult content.
+4. Spam or advertising.
+
+Almost everything else is 'SAFE'. This includes complaining about work, feeling tired, mentioning chores, or any other everyday statement that is not actively harmful. The goal is to let users express themselves freely.
+
+Examples of what you MUST classify as 'SAFE':
+- "I finally caught up on my email!"
+- "Ugh, what a long day at work."
+- "I'm so tired."
+- "I did the dishes."
+
+Examples of what you MUST classify as 'UNSAFE':
+- "I hate my boss."
+- "This website is stupid."
+- "[curse word]"
+
+Based on these strict rules, analyze the following submission. Respond with only the single word 'SAFE' or 'UNSAFE'.
+
+Submission: "${text}"`;
             
             const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
