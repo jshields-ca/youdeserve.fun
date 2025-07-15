@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <title>You Deserve Fun</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* Custom styles to complement Tailwind */
+      body {
+          font-family: 'Inter', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+      }
+      /* Fade-in animation for the reason card */
+      .fade-in {
+          animation: fadeIn 0.8s ease-in-out;
+      }
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+      /* Simple spinner for loading state */
+      .loader {
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #3498db;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+      /* Add a subtle animation for the submit button's spinner */
+      .btn-spinner {
+          display: inline-block;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top-color: #fff;
+          border-radius: 50%;
+          width: 1.25rem;
+          height: 1.25rem;
+          animation: spin 0.6s linear infinite;
+          margin-right: 0.5rem;
+      }
+    </style>
+  </head>
+  <body class="bg-amber-50 text-gray-800 flex flex-col min-h-screen items-center justify-center p-4">
+
+    <div id="app" class="w-full max-w-2xl mx-auto text-center">
+
+        <!-- Header Section -->
+        <header class="mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-amber-800">You Deserve Fun.</h1>
+            <p class="mt-2 text-lg text-gray-600">A small corner of the internet to share and remember why.</p>
+        </header>
+
+        <!-- Reason Display Section -->
+        <main id="reason-display-container" class="bg-white rounded-xl shadow-lg p-6 md:p-8 min-h-[200px] flex items-center justify-center mb-8 transition-all duration-300">
+            <div id="loader" class="loader"></div>
+            <p id="reason-text" class="text-xl md:text-2xl text-gray-700 leading-relaxed" style="display: none;"></p>
+        </main>
+        
+        <!-- Action Buttons -->
+        <div class="mb-10">
+            <button id="another-reason-btn" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                Show Another Reason
+            </button>
+        </div>
+
+        <!-- Submission Section -->
+        <section class="bg-white/60 backdrop-blur-sm p-6 rounded-xl shadow-md">
+            <form id="reason-form">
+                <label for="reason-input" class="block text-xl font-medium text-gray-700 mb-3">Why do you deserve fun today?</label>
+                <textarea id="reason-input" name="reason" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition" placeholder="I finished a tough project, I took a nice walk, I made someone smile..."></textarea>
+                <button type="submit" id="submit-btn" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex items-center justify-center">
+                    <span id="submit-btn-text">Share My Reason</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-gray-500 text-sm">
+            <p>Built with ❤️ in Winnipeg, MB. All reasons are shared anonymously.</p>
+             <p class="mt-1">User ID: <span id="user-id-display"></span></p>
+        </footer>
+
+    </div>
+
+    <!-- Generic Modal for Messages -->
+    <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-xl shadow-2xl p-8 text-center max-w-sm mx-auto">
+            <h2 id="modal-title" class="text-2xl font-bold text-amber-800 mb-4"></h2>
+            <p id="modal-message" class="text-gray-700 mb-6"></p>
+            <button id="close-modal-btn" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-5 rounded-lg">Close</button>
+        </div>
+    </div>
+
+    <!-- Firebase App (V9) -->
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
