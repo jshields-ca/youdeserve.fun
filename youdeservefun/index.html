@@ -5,66 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>You Deserve Fun</title>
 
-    <!-- Tailwind CSS - This is needed for layout, spacing, and responsive design -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@700&display=swap" rel="stylesheet">
 
-    <!-- Custom Style Guide - This handles our unique colors, fonts, and component themes -->
+    <!-- Custom Style Guide -->
     <style>
-        /* --- You Deserve Fun - Style Guide v1.0 --- */
-
-        /* 1. Font Imports */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Inter:wght@400;500&display=swap');
-
-        /* 2. Color & Font Variables (CSS Custom Properties) */
         :root {
             --bg-main: #FDFBF6;
             --text-main: #0C120C;
             --text-heading: #6C698D;
             --accent-primary: #50C5B7;
             --accent-secondary: #F5D547;
-            --accent-primary-hover: #40a093; /* A slightly darker teal */
-            --accent-secondary-hover: #e0c240; /* A slightly darker yellow */
             --card-bg: #FFFFFF;
-            --card-shadow: rgba(0, 0, 0, 0.08);
-
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --border-radius: 0.75rem;
             --font-heading: 'Poppins', sans-serif;
             --font-body: 'Inter', sans-serif;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2.5rem;
         }
-
-        /* 3. Global Styles */
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
             font-family: var(--font-body);
+            min-height: 100vh;
+            margin: 0;
+            /* Soft background gradient */
+            background-image: linear-gradient(135deg, #FDFBF6 60%, #F5D547 100%);
+            position: relative;
         }
 
-        /* 4. Typography Styles */
+        /* Decorative floating blobs */
+        .bg-blob {
+            position: fixed;
+            z-index: 0;
+            border-radius: 50%;
+            opacity: 0.18;
+            pointer-events: none;
+            filter: blur(2px);
+        }
+        .bg-blob-teal {
+            background: var(--accent-primary);
+        }
+        .bg-blob-yellow {
+            background: var(--accent-secondary);
+        }
+        .bg-blob-purple {
+            background: var(--text-heading);
+        }
         h1, h2, h3 {
             font-family: var(--font-heading);
             color: var(--text-heading);
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
         }
-
-        /* 5. Component Styles */
-        
-        /* Main display card */
-        #reason-display-container {
+        h1::after, h2::after, h3::after {
+            content: '';
+            display: block;
+            width: 60%;
+            height: 0.3em;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 0.2em;
+            margin: 0.2em auto 0 auto;
+            opacity: 0.5;
+        }
+        /* Card & Modal Styles */
+        .card, .modal-card {
             background-color: var(--card-bg);
-            box-shadow: 0 4px 15px var(--card-shadow);
-            border: 1px solid #eee;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: var(--spacing-lg);
+            border: 1px solid #EAEAEA;
+            position: relative;
+            overflow: hidden;
         }
-
-        /* Submission form card */
-        #submission-section {
-            background-color: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 4px 15px var(--card-shadow);
+        /* Card accent top border */
+        .card::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
         }
-
-        /* Modal card */
-        #message-modal .bg-white {
-             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        /* 6. Button Styles */
+        /* Button Styles */
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
@@ -73,78 +104,192 @@
             transition: all 0.2s ease-in-out;
             border: none;
             cursor: pointer;
-            box-shadow: 0 2px 5px var(--card-shadow);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
         }
-
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px var(--card-shadow);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
         .btn-primary {
             background-color: var(--accent-primary);
-            color: white;
+            color: #fff;
         }
-        .btn-primary:hover {
-            background-color: var(--accent-primary-hover);
-        }
-
         .btn-secondary {
             background-color: var(--accent-secondary);
             color: var(--text-main);
         }
-        .btn-secondary:hover {
-            background-color: var(--accent-secondary-hover);
+        /* Form Elements */
+        .form-label {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+        .form-textarea {
+            background-color: #FFFFFF;
+            border: 2px solid #E0E0E0;
+            border-radius: 0.5rem;
+            padding: var(--spacing-sm) var(--spacing-md);
+            width: 100%;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-main);
+            resize: vertical;
+            box-sizing: border-box;
+            overflow-wrap: break-word;
+        }
+        .form-textarea:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(80, 197, 183, 0.3);
+            outline: none;
+        }
+        .form-textarea::placeholder {
+            color: #A0A0A0;
+        }
+        /* Loader Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Fade-in animation for the reason card */
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        /* Centering helpers */
+        .centered-container {
+            max-width: 40rem;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .modal-card {
+            width: 100%;
+            max-width: 24rem;
+            margin: auto;
+        }
+        #reason-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin: 0;
+            padding: var(--spacing-md) 0;
+            text-align: center;
+            overflow-wrap: break-word;
+        }
+        #reason-display-container {
+            box-sizing: border-box;
+        }
+        #reason-form {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #reason-input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #submit-btn {
+            width: 100%;
+            box-sizing: border-box;
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen items-center justify-center p-4">
+<body style="min-height: 100vh; background: var(--bg-main);">
 
-    <div id="app" class="w-full max-w-2xl mx-auto text-center">
+    <!-- Decorative floating blobs -->
+    <div class="bg-blob bg-blob-teal" style="width: 320px; height: 320px; top: -80px; left: -100px;"></div>
+    <div class="bg-blob bg-blob-yellow" style="width: 180px; height: 180px; bottom: 40px; right: -60px;"></div>
+    <div class="bg-blob bg-blob-purple" style="width: 120px; height: 120px; top: 60%; left: -60px;"></div>
+
+    <div id="app" class="centered-container">
 
         <!-- Header Section -->
-        <header class="mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold">You Deserve Fun.</h1>
-            <p class="mt-2 text-lg text-gray-600">A small corner of the internet to share and remember why.</p>
+        <header style="margin-bottom: var(--spacing-xl); width: 100%;">
+            <h1 style="font-size: 2.5rem;">You Deserve Fun.</h1>
+            <p style="margin-top: var(--spacing-sm); font-size: 1.125rem; color: var(--text-heading);">A small corner of the internet to share and remember why.</p>
         </header>
 
         <!-- Reason Display Section -->
-        <main id="reason-display-container" class="p-6 md:p-8 min-h-[200px] flex items-center justify-center mb-8 rounded-xl transition-all duration-300">
+        <main id="reason-display-container" class="card min-h-[200px] flex items-center justify-center mb-8 transition-all duration-300" style="margin-bottom: var(--spacing-lg); display: flex; align-items: center; justify-content: center; min-height: 200px;">
             <div id="loader" class="loader"></div>
             <p id="reason-text" class="text-xl md:text-2xl leading-relaxed" style="display: none;"></p>
         </main>
         
         <!-- Action Buttons -->
-        <div class="mb-10">
+        <div style="margin-bottom: var(--spacing-xl); width: 100%; display: flex; justify-content: center;">
             <button id="another-reason-btn" class="btn btn-primary">
                 Show Another Reason
             </button>
         </div>
 
         <!-- Submission Section -->
-        <section id="submission-section" class="p-6 rounded-xl">
+        <section id="submission-section" class="card" style="margin-bottom: var(--spacing-lg);">
             <form id="reason-form">
-                <label for="reason-input" class="block text-xl font-medium text-gray-700 mb-3">Why do you deserve fun today?</label>
-                <textarea id="reason-input" name="reason" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 transition" placeholder="I finished a tough project, I took a nice walk, I made someone smile..."></textarea>
-                <button type="submit" id="submit-btn" class="mt-4 w-full btn btn-secondary flex items-center justify-center">
+                <label for="reason-input" class="form-label">Why do you deserve fun today?</label>
+                <textarea id="reason-input" name="reason" rows="3" class="form-textarea" placeholder="I finished a tough project, I took a nice walk, I made someone smile..."></textarea>
+                <button type="submit" id="submit-btn" class="btn btn-secondary w-full flex items-center justify-center" style="margin-top: var(--spacing-md); width: 100%; display: flex; align-items: center; justify-content: center;">
                     <span id="submit-btn-text">Share My Reason</span>
                 </button>
             </form>
         </section>
 
+        <!-- Wavy divider before footer -->
+        <div style="width: 100%; margin: var(--spacing-xl) 0;">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 60px; display: block;">
+                <path d="M0,40 Q360,80 720,40 T1440,40 V80 H0 Z" fill="url(#wave-gradient)"/>
+                <defs>
+                    <linearGradient id="wave-gradient" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#50C5B7"/>
+                        <stop offset="1" stop-color="#F5D547"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+
         <!-- Footer -->
-        <footer class="mt-12 text-sm text-gray-500">
+        <footer style="margin-top: var(--spacing-xl); color: #A0A0A0; font-size: 0.95rem; width: 100%; text-align: center;">
             <p>Built with ❤️ in Winnipeg, MB. All reasons are shared anonymously.</p>
-             <p class="mt-1">User ID: <span id="user-id-display"></span></p>
+            <p style="margin-top: 0.5rem;">User ID: <span id="user-id-display"></span></p>
         </footer>
 
     </div>
 
     <!-- Generic Modal for Messages -->
-    <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style="display: none;">
-        <div class="bg-white rounded-xl p-8 text-center max-w-sm mx-auto">
+    <div id="message-modal" class="modal-overlay p-4">
+        <div class="modal-card text-center">
             <h2 id="modal-title" class="text-2xl font-bold"></h2>
-            <p id="modal-message" class="text-gray-700 my-4"></p>
+            <p id="modal-message" class="my-4"></p>
             <button id="close-modal-btn" class="btn btn-primary">Close</button>
         </div>
     </div>
